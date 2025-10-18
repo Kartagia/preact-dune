@@ -1,0 +1,16 @@
+
+.name:after {
+  content: ':';
+}
+.name {
+  color: blue;
+  font-weight: bold;
+  padding-right: 3em;
+}
+.focuses:before {
+  content:'(';
+  padding-left: 1em;
+}
+.focuses:after {
+  content:')';
+}
