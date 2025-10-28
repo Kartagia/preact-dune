@@ -20,7 +20,9 @@ System.config({
     'ts': 'npm:plugin-typescript@8.0.0/lib/plugin.js',
     'typescript': 'npm:typescript@' + typeScriptVersion + '/lib/typescript.js',
     'preact':'npm:htm@3.1.1/preact/standalone.umd.js',
+    'react':'npm:preact@10.27.2/compat/client.js',
     'preact/compat':'npm:preact@10.27.2/compat/client.js',
+    '@material-ui/core': 'npm:preact-material-components/index.js'
   }
 });
 
