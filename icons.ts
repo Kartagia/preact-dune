@@ -6,10 +6,34 @@ export function toChildArray(children: ComponentChildren): ComponentChild[] {
   return (Array.isArray(children)? [...children] : [children])
 }
 
+/**
+ * Icon size.
+ */
+export type IconSize = number | string;
+
+/**
+ * The icon properties.
+ */
 export interface IconProperties {
+  /**
+   * The alternate text, if image is not shown.
+   */
   alt: string;
   color?: string;
-  height?: number;
+  /**
+   * The icon height.
+   * @default The icon size or icon width.
+   */
+  height?: IconSize;
+  /**
+   * The icon width.
+   * @default {this.size??this.height} The default is size or height.
+   */
+  width?: IconSize;
+  /**
+   * The icon size.
+   */
+  size?: IconSize;
 }
 
 export interface IconEvents {
@@ -20,18 +44,67 @@ export type IconProps = IconProperties & IconEvents;
 
 export type Icon = FunctionComponent<IconProps>;
 
+export interface CheckOptions<Value> {
+  message?: string;
+  defaultValue?: Value;
+}
+export type CheckSizeOptions = CheckOptions<IconSize>;
+/**
+ * Check icon size.
+ */
+export function checkSize(value: IconSize|undefined, options: CheckSizeOptions = {}): string {
+  const state = {
+    value,
+    message: options["message"]
+  }
+  if (state.value === undefined && "defaultValue" in options) {
+    state.value = options.defaultValue;
+    if (!state.message) {
+      state.message = "Invalid default value";
+    }
+  }
+    if (!state.message) {
+      state.message = "Invalid value";
+    }
+    switch (typeof state.value) {
+      case "number":
+        if (Number.isSafeInteger(state.value) && state.value > 0) {
+          return `${state.value}px`;
+        }
+        break;
+      case "string":
+        if (/^\d+(?:\.\d+)?(?:[a-z]{2})?$/.test(state.value)) {
+          return state.value;
+        }
+        break;
+    }
+    throw new SyntaxError(state.message);
+}
+
+export function checkIconSize(props: IconProperties, options: CheckSizeOptions={}): {height: string, width: string} {
+  return {
+    height: checkSize(props.height, {defaultValue: props.size ?? options.defaultValue?? 24, message: options.message ?? `Invalid height`}),
+    width: checkSize(props.width, {defaultValue: props.size ?? options.defaultValue ?? 24, message: options.message ?? "Invalid width"}),
+  }
+}
+
 export function DeleteIcon(props: IconProps) {
-  const height = props.height ?? 24;
-  const width = props.width ?? height;
-  const color = props.color ?? "#E4E3D9";
-  return html`<svg xmlns="http://www.w3.org/2000/svg" height="${height}px" viewBox="0 -960 960 960" width="${width}px" fill="${color}"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>`;
+  const d = checkIconSize(props);
+  const color = props.color ?? "";
+  return html`<svg xmlns="http://www.w3.org/2000/svg" height="${d.height}" viewBox="0 -960 960 960" width="${d.width}" fill="${color}"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>`;
 }
 
 export const EditIcon : Icon = (props) => {
-  const height = props.height ?? 24;
-  const width = props.width ?? height;
-  const color = props.color ?? "silver";
-  return html`<svg xmlns="http://www.w3.org/2000/svg" height="${height}px" viewBox="0 -960 960 960" width="${width}px" fill="${color}"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>`;
+  const d = checkIconSize(props);
+  const color = props.color ?? "";
+  const handleClick: EventListener<MouseEvent> = (e) => {
+    console.debug(`Edit ${props.alt ?? "No alt"} ${props.onClick ? "with" : "without"} handler`);
+    props.onClick?.(e);
+    return;
+  }
+  return html`<svg xmlns="http://www.w3.org/2000/svg" alt="${props.alt ?? ""}" height="${d.height}" viewBox="0 -960 960 960" width="${d.width}" fill="${color}"
+  onClick="${handleClick}"
+  ><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>`;
 }
 
 const icons : Map<string, Icon> = new Map([

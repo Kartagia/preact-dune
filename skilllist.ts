@@ -2,6 +2,7 @@ import {html, useState} from 'preact';
 import {SkillModel, Skill} from "./ability";
 import {UnsupportedError} from "./exception"
 import {IconButton} from './icons';
+import {Modal} from './modal';
 
 interface ListProps<MODEL> {
  /**
@@ -30,6 +31,21 @@ interface ListProps<MODEL> {
  */
  
  export function SkillList(props: ListProps<SkillModel>) {
+  const [edit, setEdit] = useState<SkillModel|undefined>();
+  const [confirmEdit, setConfirmEdit] = useState(()=>{setEdit(undefined)});
+  const [cancelEdit, setCancelEdit] = useState(()=>{setEdit(undefined)});
+  const openEditor = (defaultValue: SkillModel): Promise<SkillModel> => {
+   return new Promise<SkillModel>((resolve, reject) => {
+    setConfirmEdit(resolve);
+    setCancelEdit(reject);
+    setEdit(defaultValue);
+    console.debug(`Editor opened for ${defaultValue.name}`);
+   }
+   )
+  }
+  const closeEdit: EventListener<MouseEvent> = (event) => {
+   setEdit(undefined);
+  }
   
   const actions = [
    {
@@ -45,8 +61,17 @@ interface ListProps<MODEL> {
    {
     icon: "edit",
     prop: "onChange",
-    action: props.onChange ? undefined : ((oldValue:SkillModel) => {
-     console.error("Edit skill not supported")
+    action: props.onChange ? undefined : ((oldValue:SkillModel, e: MouseEvent) => {
+     e.preventDefault(true);
+     openEditor(oldValue).then(
+      newValue => {
+       props.onChange(oldValue, newValue);
+      }, 
+      error => {
+        closeEditor();
+      }
+     )
+     return;
     })
    }
   ];
@@ -57,12 +82,21 @@ interface ListProps<MODEL> {
     return html`<div class="entry"><${Skill} skill="${skill}" /><div class="actions">${
      actions.reduce( (res, action)=> {
       if (action.action) {
-       res.push(html`<${IconButton}><i onClick="${action.action.bind(undefined, skill)}">${action.icon}</i></${IconButton}>`);
+       res.push(html`<${IconButton} onClick="${action.action.bind(undefined, skill)}"><i>${action.icon}</i></${IconButton}>`);
       }
       return res;
      }, [])
     }</div></div>`;
    })
    
-  }</div>`;
+  }<${Modal} show="${edit !== undefined}" onConfirm="" onCancel="${closeEdit}" title="Modal Dialog">
+  <form class="modal-content">
+    <div class="form-field">
+    <label>Name</label><input name="name" value="${edit?.name}"></input></div>
+    <div class="form-field">
+    <label>Score</label><input name="score" value="${edit?.value}"></input></div>
+  </form>
+  
+  </${Modal}>
+  </div>`;
  }
