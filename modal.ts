@@ -30,7 +30,7 @@ export function Modal<Value>(props: ModalProps<Value>) {
   const title = orElse(props.title, "Modal dialog");
   const header = html`<div class="header">${title}</div>`;
   const footer = html`<div class="footer"><button class="confirm" onClick="${confirmDialog}">Confirm</button><button class="cancel" onClick="${cancelDialog}">Cancel</button></div>`
-  return html`<div onClick="${cancelDialog}" class="${classes.join(" ")}">
+  return html`<div class="${classes.join(" ")}">
   <div class="modal-content" onclick="${(e: MouseEvent) => {e.preventDefault();}}">
   ${header}
   <div class="main">${props.children}</div>${footer}</div></div>`;
