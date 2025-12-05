@@ -79,7 +79,11 @@ interface ListProps<MODEL> {
   return html`<div>${
    props.entries.map( skill => {
     
-    return html`<div class="entry"><${Skill} skill="${skill}" /><div class="actions">${
+    return html`<div class="skill list"><div class="name skill">${skill.name}</div><div class="score skill">${skill.score}</div>
+    <div class="focuses skill">
+    ${skill.focus ? skill.focus.map( focus => html`<span class="focus">${focus}</span>`) : html``}
+    </div>
+    <div class="actions">${
      actions.reduce( (res, action)=> {
       if (action.action) {
        res.push(html`<${IconButton} onClick="${action.action.bind(undefined, skill)}"><i>${action.icon}</i></${IconButton}>`);

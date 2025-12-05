@@ -1,10 +1,6 @@
 import {html, useState} from 'preact';
 
-export interface SkillModel {
-  score: number,
-  name: string,
-  focus?: string[]
-}
+export {SkillModel} from "./skill.model";
 
 export interface SkillProps {
   class?:string,
@@ -14,5 +10,5 @@ export interface SkillProps {
 export function Skill(props:SkillProps) {
   
   
-  return html`<div class="${props.class}"><span class="name">${props.skill.name}</span><span>${props.skill.score}</span>${props.skill.focus && html`<span class="focuses">${(props.skill.focus ?? []).map( focus => (html`<span class="focus">${focus}</span>`))}</span>`}</div>`;
+  return html`<div class="${props.class}"><span class="name">${props.skill.name}</span><span>${props.skill.score}</span>${html`<span class="focuses">${props.skill.focus?.map( focus => (html`<span class="focus">${focus}</span>`))}</span>`}</div>`;
 }

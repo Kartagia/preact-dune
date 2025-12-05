@@ -17,23 +17,30 @@ export interface ModalEvents<Value> {
 export type ModalProps<Value> = ModalPojo<Value> & ModalEvents<Value>;
 
 export function Modal<Value>(props: ModalProps<Value>) {
-  const classes = ["modal"];
+  const classes = ["modal", "flex-column"];
   if (!props.show) {
     classes.push("hidden");
   }
+  const preventDefault: TargetedEvent<MouseEvent> = (event) => {event.preventDefault();}
   const cancelDialog: TargetedEvent<MouseEvent> = (event) => {
+    event.preventDefault();
     props.onCancel(props.value);
   }
   const confirmDialog: TargetedEvent<MouseEvent> = (event) => {
     props.onConfirm(props.value);
+    event.preventDefault();
   }
   const title = orElse(props.title, "Modal dialog");
-  const header = html`<div class="header">${title}</div>`;
+  const header = html`<div class="header" onClick="${preventDefault}">${title}</div>`;
   const footer = html`<div class="footer"><button class="confirm" onClick="${confirmDialog}">Confirm</button><button class="cancel" onClick="${cancelDialog}">Cancel</button></div>`
+  const main = html`<div class="main">${props.children}</div>`
   return html`<div class="${classes.join(" ")}">
-  <div class="modal-content" onclick="${(e: MouseEvent) => {e.preventDefault();}}">
+  <div class="modal-content">
   ${header}
-  <div class="main">${props.children}</div>${footer}</div></div>`;
+  ${main}
+  ${footer}
+  </div>
+  </div>`;
 }
 
 export function UncontrolledModal < Value > (props: ModalProps < Value > ) {
