@@ -1,4 +1,52 @@
 
+
+:root {
+  --disabled: grey;
+  --primary: navy;
+  --secondary: darkcyan;
+  --background: lightyellow;
+  --color: black;
+  --disabled-color: yellow;
+  --primary-color: #c9c9c9;
+  --secondary-color: green;
+  --error: #00a9a9;
+  --error-color: red;
+  --success-color: green;
+  --success-background: #808000;
+}
+
+.success {
+  color: var(--success-color);
+  background-color: var(--success);
+}
+.error {
+  color: var(--error-color);
+  background-color: var(--error);
+}
+
+.disabled {
+   color: var(--disabled);
+}
+
+.hidden {
+  display: none;
+}
+
+html {
+  background-color: var(--background);
+  color: var(--color);
+}
+body {
+  min-height: 100%;
+  border-radius:5mm;
+  border: 3px solid var(--color);
+}
+
+.control.disabled {
+  background: var(--disabled);
+  color: var(--disabled-color);
+}
+
 .name:after {
   content: ':';
 }
@@ -26,9 +74,7 @@
   content:'';
 }
 
-.hidden {
-  display: none;
-}
+
 
 .modal {
   position: fixed;
@@ -43,6 +89,17 @@
   justify-content: space-around;
   padding-top: 10%;
   padding-bottom: 0;
+}
+
+.control {
+  background-color: var(--secondary);
+  color: var(--secondary-color);
+  font-size-adjust: +1;
+  min-width: 4em;
+}
+
+bold {
+  font-weight: bold;
 }
 
 .flex-row {
