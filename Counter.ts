@@ -1,6 +1,9 @@
 import { html, useEffect } from 'preact';
 import { useParsedValue, Parser, Format } from "./hooks";
 import { type Compare, defaultCompare } from "././utils";
+import {defaultConsoleLogger} from "./log";
+
+const log = defaultConsoleLogger();
 
 /**
  * The counter properties.
@@ -114,17 +117,23 @@ export function InputCounter < T > (props: CounterProps < T > ) {
   };
   
   const altered = (e) => {
+    if (typeof e === "object" && "target" in e && typeof e === "object") {
     log.info("Value changed to %s", e.target.value);
     setInput(e.target.value);
+    } else {
+      log.info("input value => %s", e.target.value);
+}
   }
   
   const confirmed = (e) => {
+    if (typeof e === "object") {
     log.info("Confirmed %s", e.target.value);
+    }
   };
   const inputComponent = (props.parse ?
-    html`<input onInput="altered" 
+    html`<input onInput="${altered}" 
     class="${inputClasses.join(" ")}"
-    onChange="confirmed" value="${input}"></input>` :
+    onChange="${confirmed}" value="${input}"></input>` :
     html`<span>${props.format(input)}</span>`
   );
   const decreaseControl = html`<${CounterControl} value="${parsed}" min="${props.min}" max="${props.max}" value="${parsed}" compare="${props.compare}" action="${decrease}" title="-" />`;
