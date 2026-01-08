@@ -67,7 +67,7 @@ export function useParsedValue < T > (
   const equalState = (old: InputValue < T > | undefined, current: Pick < InputState < T > , "input" | "parsed" > ) => (Object.is(old?.input, current.input) && Object.is(old?.parsed, current.parsed));
   const setInputValue = useCallback(
     (inputValue: string) => {
-      console.group("Set input value of %s to %s",
+      logger.group("Set input value of %s to %s",
         id, inputValue
       );
       try {
@@ -110,12 +110,12 @@ export function useParsedValue < T > (
           }
         )
       } finally {
-        console.groupEnd();
+        logger.groupEnd();
       }
     });
   
   const setParsedValue = useCallback((parsedValue: T) => {
-    console.group("set parsed value");
+    logger.group("set parsed value");
     try {
       const inputValue = props.format(parsedValue);
       setInputState(
@@ -135,7 +135,7 @@ export function useParsedValue < T > (
       logger.error("Format error: %s", error)
       throw error;
     } finally {
-      console.groupEnd();
+      logger.groupEnd();
     }
   });
   return [inputState.input, inputState.parsed, inputState.partial, setInputValue, setParsedValue];
