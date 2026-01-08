@@ -1,10 +1,14 @@
 import { html, useState, useEffect, useCallback } from 'preact';
+import { defaultConsoleLogger } from './log';
+import { format as formatString} from './format';
 
 export type Parser < T > = (val: string) => T;
 
 export type Format < T > = (val: T) => string;
 
-export function defaultFormat < T > (source: T): stting {
+const logger = defaultConsoleLogger();
+
+export function defaultFormat < T > (source: T): string {
   return "" + source;
 }
 
@@ -43,10 +47,11 @@ export function useParsedValue < T > (
 ) {
   const id = Math.trunc(Math.random()*Number.MAX_SAFE_INTEGER).toString();
   const format = props.format ?? defaultFormat;
+  const parser = props.parser;
   const [inputState, setInputState] = useState < InputState < T >> (
   {
-    input: props.input ?? props.format(props.parsed),
-    parsed: props.parsed ?? props.parser(props.input),
+    input: ("input" in props ? props.input : props.format(props.parsed)),
+    parsed: ("input" in props ? props.parser(props.input) : props.parsed),
     format: props.format,
     parser: props.parser
   });
@@ -66,10 +71,10 @@ export function useParsedValue < T > (
         id, inputValue
       );
       try {
-        const newValue = props.parser(inputValue);
-        
+        const newValue = parser(inputValue);
+        logger.info("Parsed value %s", newValue);
         setInputState(
-          old => {
+          (old: InputState<T>) => {
             if (equalState(old, { input: inputValue, parsed: newValue })) {
               logger.info("No change");
               return old;
@@ -84,8 +89,9 @@ export function useParsedValue < T > (
           }
         );
       } catch (error) {
+        logger.group(formatString("New input value is partial due %s", error));
         setInputState(
-          old => {
+          (old: InputState<T>) => {
             if (old && equalState(old, {
                 input: inputValue,
                 parsed: old.parsed
@@ -113,7 +119,7 @@ export function useParsedValue < T > (
     try {
       const inputValue = props.format(parsedValue);
       setInputState(
-        old => {
+        (old: InputState<T>) => {
           if (equalState(old, { input: inputValue, parsed: parsedValue })) {
             return old;
           }
@@ -126,7 +132,7 @@ export function useParsedValue < T > (
         }
       )
     } catch (error) {
-      logger.error("Format error: %s", error.toString())
+      logger.error("Format error: %s", error)
       throw error;
     } finally {
       console.groupEnd();
