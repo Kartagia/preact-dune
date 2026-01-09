@@ -1,0 +1,13 @@
+{
+    "include": ["*.ts"],
+    "exclude": ["node_modules"],
+    "compilerOptions": {
+        "lib": ["DOM", "ES2016"],
+        "paths": {
+            "preact": ["./node_modules/htm/preact/standalone.umd.js"],
+            "react": ["./node_modules/preact/compat/client.js"],
+            "preact/compat": ["./node_modules/preact/compat/client.js"],
+            "@material-ui/core": ["./node_modules/preact-material-components/index.js"]
+        }
+    }
+}
