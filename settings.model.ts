@@ -80,6 +80,7 @@ export interface SettingItemModel {
 export interface SettingsCategoryModel {
   title: string;
   entries: SettingsEntryModel[];
+  prefix?: string;
   open?: boolean;
   disabled?: boolean;
 }

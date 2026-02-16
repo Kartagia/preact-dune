@@ -4,6 +4,7 @@ import { SettingsItem} from "./settings.item";
 
 export interface SettingsCategoryProps {
   model: SettingsCategoryModel;
+  prefix?: string;
   onchange?: (property: string, value: string) => void;
 }
 
@@ -11,8 +12,12 @@ export function SettingsCategory(props: SettingsCategoryProps) {
   console.group(`Category ${props.model?.title ?? ""}`);
   const [open, setOpen] = useState(props.model.open ?? true);
   const [model, setModel] = useState(props.model);
-  const handleChange = (prop, value) => {
-    
+  const handleChange = (prop: string, value: string) => {
+    if (props.prefix) {
+      props.onchange?.(`${props.prefix}.${prop}`, value);
+    } else {
+      props.onchange?.(prop, value);
+    }
   }
   try {
     
@@ -22,9 +27,9 @@ export function SettingsCategory(props: SettingsCategoryProps) {
     model.entries.map(
       item => {
       if ("entries" in item) {
-        return html`<div>${item.title}</div>`;
+        return html`<${SettingsCategory} model="${item}" prefix="${item.prefix ??""}" onchange="${(prop, value) => handleChange(prop, value)}"/>`;
       } else {
-      return html`<${SettingsItem} model="${item}" onchange="${handleChange}" />`
+        return html`<${SettingsItem} model="${item}" onchange="${handleChange}" />`
       }
       }
     )
