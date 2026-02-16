@@ -13,6 +13,12 @@
   --error-color: red;
   --success-color: green;
   --success-background: #808000;
+
+  --menu-color: var(--primary-color);
+  --menu: var(--primary);
+  --menu-hover: var(--primary-color);
+  --menu-hover-color: var(--primary);
+  
 }
 
 .success {
@@ -25,7 +31,8 @@
 }
 
 .disabled {
-   color: var(--disabled);
+   color: var(--disabled-color);
+   background: var(--disabled);
 }
 
 .hidden {
@@ -37,9 +44,27 @@ html {
   color: var(--color);
 }
 body {
-  min-height: 100%;
+  height: 100%;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
   border-radius:5mm;
   border: 3px solid var(--color);
+  padding: 5% 15%;
+  margin: 5;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  vertical-align: middle;
+  overflow-y: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .control.disabled {
@@ -74,7 +99,69 @@ body {
   content:'';
 }
 
+nav.left {
+  position: fixed;
+  height: 100%;
+  width: 200px;
+  top: 0;
+  left: 0;
+}
 
+.menu {
+  list-style-type: none;
+}
+.menu.left {
+  top: 0;
+  left:0;
+  position: fixed;
+  height: 100%;
+}
+.menu.right {
+  top:0;
+  right: 0;
+  position: fixed;
+  height: 100%;
+}
+.menu.top {
+  top:0;
+left: 0;
+position: fixed;
+height: 100%;
+}
+.menu.bottom {
+  bottom:0;
+left: 0;
+position: fixed;
+height: 100%;
+}
+.menu-item {
+  text-align: center;
+  color: var(--menu-color);
+  background-color: var(--menu);
+  padding: 0.6em 1em;
+}
+.menu li .menu-item:hover {
+  color: var(--menu-color, white);
+  background-color: var(--menu, red);
+}
+
+.menu.vertical .menu-item {
+  display: block;
+  padding: 0.6em 1em;
+}
+
+.menu li .menu-item:hover {
+  color: var(--menu-hover-color, white);
+  background-color: var(--menu-hover, blue);
+}
+.menu li .menu-item.active {
+  color: var(--menu-active-color, black);
+  background-color: var(--menu-active, yellow);
+}
+.menu li .menu-item.disabled, .menu.disabled li .menu-item {
+  color: var(--menu-active-color, black);
+  background-color: var(--menu-disabled, grey);
+}
 
 .modal {
   position: fixed;
