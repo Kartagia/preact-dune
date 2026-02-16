@@ -3,6 +3,10 @@
  * Character data retrieval
  * @module
  */
+ 
+import {SkillModel} from './skill.model';
+import {isUUID} from './identifiers'
+export {isUUID};
 
 export interface Entry<Id, Value> {
   /**
@@ -258,4 +262,83 @@ export function FetchDao<Value, Id = string>(
 
     }
   };
+}
+
+export function isEntry(t: unknown,
+  isId: ((v: unknown) => v is Id),
+  idValue: ((v: unknown) => v is Value)
+): t is Entry<Id, Value> {
+  return v != null &&
+  typeof v === "object" &&
+  idId(v.id) &&
+  isValue(v.value);
+}
+
+export function isSkill(t: unknown): t is StringModel {
+  return t != null && typeof t === "object" && 
+  typeof t.name === "string" && 
+  typeof t.score === "number" &&
+  (t.focus === "undefined" ||
+    Array.isArray(t.focus) &&
+    t.focus.every(v => typeof v === "string")
+  );
+}
+
+
+
+export function isSkillEntry(t: unknown): t is Entry<Id, SkillModel> {
+  return isEntry(t, isUUID, isSkill);
+}
+
+/**
+ */
+export function SkillDao<SkillModel, string>(
+  baseUrl: string,
+  init?: RequestInit
+): FetchDao<Skill, string> {
+  return FetchDao(
+    baseUrl,
+    {
+      init: {
+        method: "GET",
+        headers: [
+          "Accept: application/json;"
+        ]
+      },
+      parse(response: Response) {
+        const json = response.json();
+        if (Array.isArray(json) && json.every(isSkillEntry))
+          return json;
+        else {
+          throw {
+            message: "Invalid result",
+            status: 500
+          }
+        }
+      }
+    },
+    undefined,
+    {
+      init: {
+        method: "POST"
+      },
+      format(target, value) {
+        
+      },
+      parse(res: Response) {
+        return res.json().then(
+          id => {
+            if (isUUID(id)) {
+              return id;
+            } else {
+              throw {
+                status: 500,
+                message: "Unexpected result"
+              }
+            }
+          }
+        )
+      }
+    }
+  );
 }
