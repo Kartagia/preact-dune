@@ -14,7 +14,6 @@ export function SettingsItem(props:SettingsItemProps) {
   console.log(`Item ${props.model.label}`);
   const id = `id.${props.model.name}`;
   const handleChange = (e) => {
-    console.table({newValue: e.currentTarget?.value});
     props.onchange?.(props.model.name, e.currentTarget.value);
   };
   return html`<div>
