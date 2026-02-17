@@ -1,9 +1,9 @@
 import {html, useState} from 'preact';
-import {type SettingsEntryModel, type SettingsCategoryModel} from "././settings.model";
+import {type SettingEntryModel, type SettingCategoryModel} from "././settings.model";
 import { SettingsItem} from "./settings.item";
 
 export interface SettingsCategoryProps {
-  model: SettingsCategoryModel;
+  model: SettingCategoryModel;
   prefix?: string;
   onchange?: (property: string, value: string) => void;
 }
