@@ -4,4 +4,12 @@
  * @module settings
  */
  
- export default {}
+ export type {SettingItemModel, SettingCategoryModel, FieldType} from "./settings.model.ts";
+ export {isSettingItemModel, isSettingCategoryModel, isFieldType, FieldTypes} from "./settings.model.ts";
+ 
+ export default {
+  isSettingCategoryModel,
+  isSettingItemModel,
+  isFieldType,
+  FieldTypes
+ }
