@@ -1,6 +1,6 @@
 import {html} from "preact";
 import {SettingsItem, type SettingsItemProps} from "./settings.item";
-import { SettingItemModel, SettingsCategoryModel } from "./settings.model";
+import { SettingItemModel, SettingCategoryModel } from "./settings.model";
 import {SettingsCategory } from "./settings.category";
 
 export function SettingsApp() {
@@ -8,7 +8,7 @@ export function SettingsApp() {
     name:"test",
     label: "Test value"
   };
-  const category: SettingsCategoryModel = {
+  const category: SettingCategoryModel = {
     title: "Test Category",
     entries: [setting]
   }
